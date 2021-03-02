@@ -9,59 +9,113 @@
     <link rel="stylesheet" href="./common.css">
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     <style>
-        div {
-            height: 300px;
-            width: 300px;
+        body {
+            background-color: black;
+        }
+        
+        ul>li {
+            list-style: none;
             position: absolute;
             top: 50%;
-            transform: translateY(-50%);
-            text-align: center;
-            line-height: 300px;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+        
+        ol {
+            position: absolute;
+            right: 50%;
+            transform: translateX(900%);
+        }
+        
+        ol>li {
+            list-style: none;
+            width: 50px;
+            height: 50px;
+            margin: 15px 0;
+            background: gray;
             color: white;
-            font-size: 30px;
+            font-size: 25px;
+            font-weight: 700;
+            text-align: center;
+            line-height: 50px;
+            cursor: pointer;
+            transition: all 0.5s;
         }
         
-        div:nth-child(1) {
-            background-color: green;
-        }
-        
-        div:nth-child(2) {
+        .clicked {
             background-color: orange;
-        }
-        
-        div:nth-child(3) {
-            background-color: teal;
-        }
-        
-        div:nth-child(4) {
-            background-color: crimson;
+            transform: scale(1.2);
         }
     </style>
 
 </head>
 
 <body>
-    <div>click</div>
-    <div>click</div>
-    <div>click</div>
-    <div>click</div>
-    <!-- ---end   -->
-
+    <ul>
+        <li><img src="./images/01.jpeg" alt=""></li>
+        <li><img src="./images/02.jpeg" alt=""></li>
+        <li><img src="./images/03.jpeg" alt=""></li>
+        <li><img src="./images/05.jpeg" alt=""></li>
+        <li><img src="./images/06.jpeg" alt=""></li>
+        <li><img src="./images/04.jpeg" alt=""></li>
+    </ul>
+    <ol>
+        <li>1</li>
+        <li>2</li>
+        <li>3</li>
+        <li>4</li>
+        <li>5</li>
+        <li>6</li>
+    </ol>
     <script>
         $(function() {
 
-            var num = 1;
+            var ul_lis = $('ul li');
 
-            $('div').on('click', function() {
-                $(this).fadeOut();
+            var ol_lis = $('ol li');
 
-                if (num == 4) {
-                    $('div').fadeIn()
-                    num = 0;
+            // 1. 点击轮播
+            ol_lis.on('click', function() {
+                // 排他思想
+                // 删除所有ul_li
+                ul_lis.stop().fadeOut(1000);
+                // get the number of ol_li which clicked
+                var index = $(this).index();
+                // console.log(index); // 0~5
+
+                current = index;
+
+                // ol_li 的 index 控制 ul_li
+                ul_lis.eq(index).stop().fadeIn(1000);
+                // 小点样式排他思想
+                // sibilings（）链式编程
+                $(this).addClass('clicked').siblings().removeClass('clicked');
+            });
+
+            // 小圆点默认样式
+            ol_lis.eq(5).addClass('clicked');
+
+            //ul_lis 图片的数量
+            var current = ul_lis.length;
+
+            // 2. 自动轮播
+            var timer = setInterval(function() {
+                //排他思想，清除所有
+                ul_lis.stop().fadeOut();
+
+                // 从默认个数的显示，index 0～5
+                current--;
+                ul_lis.eq(current).stop().fadeIn(1000);
+
+                //控制ol_lis小圆点样式
+                ol_lis.eq(current).addClass('clicked').siblings().removeClass('clicked');
+
+                if (current == 0) {
+                    current = ul_lis.length
                 }
-                num++;
-                // console.log(num);
-            })
+            }, 2000)
+
+
         })
     </script>
 
