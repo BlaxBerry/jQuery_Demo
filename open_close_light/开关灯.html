@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>开关灯</title>
+    <link rel="stylesheet" href="./common.css">
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+</head>
+
+<body>
+    <button> open / close </button>
+    <script>
+        $(function() {
+
+            // var flag = 0;
+            // $('button').on('click', function() {
+            //     if (flag == 0) {
+            //         $('body').css({
+            //             background: 'black'
+            //         });
+            //         flag = 1
+            //     } else {
+            //         $('body').css({
+            //             background: ''
+            //         });
+            //         flag = 0
+            //     }
+            // })
+
+
+            var flag = false;
+            $('button').on('click', function() {
+                $('body').css('background', !flag ? 'black' : '');
+                flag = !flag
+            })
+
+        })
+    </script>
+</body>
+
+</html>
