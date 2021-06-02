@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
+  </head>
+  <body>
+    <!-- <button id="getNoParams">不带参数的get请求</button>
+    <button id="add">新增</button> -->
+
+    <div>
+      书名：<input type="text" class="name" /> 
+      作者：<input type="text" class="author"/>
+      出版社：<input type="text" class="publisher" />
+
+      <button id="addBtn">添加</button>
+    </div>
+
+    <table>
+      <thead>
+        <tr>
+          <td>index</td>
+          <td>id</td>
+          <td>name</td>
+          <td>author</td>
+          <td>publisher</td>
+          <td>detele</td>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+    <script>
+      //   const book = {
+      //     bookname: "金瓶梅",
+      //     author: "兰陵笑笑生",
+      //     publisher: "无",
+      //   };
+
+      $(function () {
+        function renderList() {
+          $.ajax({
+            type: "GET",
+            url: "http://www.liulongbin.top:3006/api/getbooks",
+            success: function (res) {
+              if (res.status !== 200) {
+                alert("数据获取失败");
+              }
+              let list = [];
+              $.each(res.data, function (index, item) {
+                list.push(`
+                               <tr>
+                                       <td>${index + 1}</td>
+                                       <td>${item.id}</td>
+                                       <td>${item.bookname}</td>
+                                       <td>${item.author}</td>
+                                       <td>${item.publisher}</td>
+                                       <td>
+                                            <a href="javascript:;" 
+                                                data-id="${item.id}"
+                                            >
+                                             删除
+                                            </a>
+                                        </td>
+                             </tr>
+                       `);
+              });
+              $("tbody").empty().append(list.join(""));
+            },
+          });
+        }
+        renderList();
+
+
+        // 通过代理，给动态生成的子元素绑定事件
+        $("tbody").on("click", "a", function () {
+          //   console.log($(this).attr("data-id"));
+          $.ajax({
+            type: "GET",
+            url: "http://www.liulongbin.top:3006/api/delbook",
+            data: { id: $(this).attr("data-id") },
+            success: function (res) {
+              if (res.status !== 200) {
+                alert("删除图书失败");
+              }
+              // 调用页面渲染
+              renderList();
+            },
+          });
+        });
+
+
+
+        // 添加
+        $("#addBtn").on("click", function () {
+          let bookname = $(".name").val().trim();
+          let author = $(".author").val().trim();
+          let publisher = $(".publisher").val().trim();
+
+          // console.log(bookname, author, publisher);
+          if (bookname <= 0 || author <= 0 || publisher <= 0) {
+            return alert("请填完整");
+          } else {
+            $.ajax({
+              type: "POST",
+              url: "http://www.liulongbin.top:3006/api/addbook",
+              data: {
+                bookname: bookname,
+                author: author,
+                publisher: publisher,
+              },
+              success: function (res) {
+                console.log(res);
+                if (res.status !== 200) {
+                  alert("添加图书失败");
+                }
+                renderList();
+              },
+            });
+          }
+
+          $(".name").val("");
+          $(".author").val("");
+          $(".publisher").val("");
+        });
+
+
+
+        // $("#add").on("click", function () {
+        //   //   $.post(
+        //   //     "http://www.liulongbin.top:3006/api/addbook",
+        //   //     book,
+        //   //     function (res) {
+        //   //       console.log(res);
+        //   //     }
+        //   //   );
+        //   $.ajax({
+        //     type: "POST",
+        //     url: "http://www.liulongbin.top:3006/api/addbook",
+        //     data: book,
+        //     success: function (res) {
+        //       console.log(res);
+        //     },
+        //   });
+        // });
+
+        // $("#getNoParams").on("click", function () {
+        //   //   $.get(
+        //   //     "http://www.liulongbin.top:3006/api/getbooks",
+        //   //     // { id: 2 },
+        //   //     function (res) {
+        //   //       console.log(res);
+        //   //     }
+        //   //   );
+        //   $.ajax({
+        //     type: "GET",
+        //     url: "http://www.liulongbin.top:3006/api/getbooks",
+        //     // data:{id:2},
+        //     success: function (res) {
+        //       console.log(res);
+        //     },
+        //   });
+        // });
+      });
+    </script>
+  </body>
+</html>
